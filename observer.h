@@ -4,9 +4,9 @@
 /* Macro for External Access Interface */
 #define US(X) im.us[X]
 #define IS(X) im.is[X]
-#define US_C(X) im.us_curr[X]
+#define US_C(X) im.us_curr[X]   //当前步
 #define IS_C(X) im.is_curr[X]
-#define US_P(X) im.us_prev[X]
+#define US_P(X) im.us_prev[X]   //上一步
 #define IS_P(X) im.is_prev[X]
 
 struct InductionMachine{

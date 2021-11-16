@@ -11,14 +11,14 @@
 #include "math.h"
 
 /* How long should I go? */
-#define NUMBER_OF_LINES (200000)
+#define NUMBER_OF_LINES (200000)    //仿真步长
 
 #define IM_TS 1.25e-4
-#define IM_TS_INVERSE 8000
-#define DOWN_FREQ_EXE 2
+#define IM_TS_INVERSE 8000  //仿真频率8kHz
+#define DOWN_FREQ_EXE 2 //dowm sample
 #define DOWN_FREQ_EXE_INVERSE 0.5
 #define TS (IM_TS*DOWN_FREQ_EXE) //2.5e-4 
-#define TS_INVERSE (IM_TS_INVERSE*DOWN_FREQ_EXE_INVERSE) // 4000
+#define TS_INVERSE (IM_TS_INVERSE*DOWN_FREQ_EXE_INVERSE) // 4000    控制器步长8000*0.5=4000
 
 
 /* General Constants */
