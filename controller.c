@@ -95,19 +95,19 @@ double PI(struct PI_Reg *r, double err){
 void control(double speed_cmd, double speed_cmd_dot){
     // Input 1 is feedback: estimated speed or measured speed
     #if SENSORLESS_CONTROL
-        CTRL.omg_fb    = ob.tajima.omg;
-        CTRL.omega_syn = ob.tajima.omega_syn;
-        CTRL.omega_sl  = ob.tajima.omega_sl;
+        CTRL.omg_fb    = ob.tajima.omg;     //转速反馈
+        CTRL.omega_syn = ob.tajima.omega_syn;   //同步速度
+        CTRL.omega_sl  = ob.tajima.omega_sl;    //滑差
     #else
         CTRL.omg_fb = im.omg;
     #endif
     // Input 2 is feedback: measured current 
-    CTRL.ial_fb = IS_C(0);
+    CTRL.ial_fb = IS_C(0);      //电流反馈
     CTRL.ibe_fb = IS_C(1);
     // Input 3 differs for DFOC and IFOC
     #if CONTROL_STRATEGY == DFOC
         // DFOC: estimated flux components in alpha-beta frame
-        CTRL.psi_mu_al_fb = ob.psi_mu_al;
+        CTRL.psi_mu_al_fb = ob.psi_mu_al;   //转子磁链
         CTRL.psi_mu_be_fb = ob.psi_mu_be;
     #elif CONTROL_STRATEGY == IFOC
         // IFOC: estimated rotor resistance
@@ -115,7 +115,7 @@ void control(double speed_cmd, double speed_cmd_dot){
     #else
     #endif
 
-    // Flux (linkage) command
+    // Flux (linkage) command   磁链给定
     CTRL.rotor_flux_cmd = 0.5; // f(speed, dc bus voltage, last torque current command)
         // 1. speed is compared with the base speed to decide flux weakening or not
         // 2. dc bus voltage is required for certain application
@@ -129,7 +129,7 @@ void control(double speed_cmd, double speed_cmd_dot){
 
     // T-axis current command
     static int vc_count = 0;
-    if(vc_count++==VC_LOOP_CEILING*DOWN_FREQ_EXE_INVERSE){ 
+    if(vc_count++==VC_LOOP_CEILING*DOWN_FREQ_EXE_INVERSE){      //转速环采样频率低于电流环采样频率
         vc_count = 0;
         CTRL.omg_ctrl_err = CTRL.omg_fb - speed_cmd*RPM_2_RAD_PER_SEC;
         CTRL.iTs_cmd = - PI(&CTRL.pi_speed, CTRL.omg_ctrl_err);
