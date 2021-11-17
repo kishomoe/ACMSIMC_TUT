@@ -270,16 +270,16 @@ void control(double speed_cmd, double speed_cmd_dot){
         // CTRL.omg_fb    ;
         // CTRL.omega_syn ;
     #else
-        CTRL.omg_fb = sm.omg;
+        CTRL.omg_fb = sm.omg;   //测量值->反馈值
     #endif
     // Input 2 is feedback: measured current 
-    CTRL.ial_fb = IS_C(0);
-    CTRL.ibe_fb = IS_C(1);
+    CTRL.ial_fb = IS_C(0);      //电流反馈
+    CTRL.ibe_fb = IS_C(1);      //电流反馈
     // Input 3 is the rotor d-axis position
     #if SENSORLESS_CONTROL
         getch("Not Implemented");
     #else
-        CTRL.theta_M = sm.theta_d;
+        CTRL.theta_M = sm.theta_d;      //磁链观测（位置）
     #endif
 
     #if CONTROL_STRATEGY == NULL_D_AXIS_CURRENT_CONTROL
@@ -309,7 +309,7 @@ void control(double speed_cmd, double speed_cmd_dot){
     CTRL.iMs = AB2M(CTRL.ial_fb, CTRL.ibe_fb, CTRL.cosT, CTRL.sinT);
     CTRL.iTs = AB2T(CTRL.ial_fb, CTRL.ibe_fb, CTRL.cosT, CTRL.sinT);
 
-    // Voltage command in M-T frame
+    // Voltage command in M-T frame     电流环
     double vM, vT;
     vM = - PI(&CTRL.pi_iMs, CTRL.iMs-CTRL.iMs_cmd);
     vT = - PI(&CTRL.pi_iTs, CTRL.iTs-CTRL.iTs_cmd);

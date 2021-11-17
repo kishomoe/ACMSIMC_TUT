@@ -90,15 +90,15 @@ void rK5_dynamics(double t, double *x, double *fx){
         fx[4] = (ACM.Tem - ACM.Tload)*ACM.mu_m; // elec. angular rotor speed
         fx[5] = x[4];                           // elec. angular rotor position
 
-    #elif MACHINE_TYPE == SYNCHRONOUS_MACHINE
+    #elif MACHINE_TYPE == SYNCHRONOUS_MACHINE   //[0]id [1]iq [2]we [3]theta_e    ACM.KE=psi_f
         // electromagnetic model
-        fx[0] = (ACM.ud - ACM.R * x[0] + x[2]*ACM.Lq*x[1]) / ACM.Ld;
-        fx[1] = (ACM.uq - ACM.R * x[1] - x[2]*ACM.Ld*x[0] - x[2]*ACM.KE) / ACM.Lq;
+        fx[0] = (ACM.ud - ACM.R * x[0] + x[2]*ACM.Lq*x[1]) / ACM.Ld;    //id'=(ud-r*id+we*Lq*iq)/Ld
+        fx[1] = (ACM.uq - ACM.R * x[1] - x[2]*ACM.Ld*x[0] - x[2]*ACM.KE) / ACM.Lq;  //iq'=(uq-r*iq-w_e*Ld*id-we*psi_f)/Lq
 
         // mechanical model
-        ACM.Tem = ACM.npp*(x[1]*ACM.KE + (ACM.Ld - ACM.Lq)*x[0]*x[1]);
-        fx[2] = (ACM.Tem - ACM.Tload)*ACM.mu_m; // elec. angular rotor speed
-        fx[3] = x[2];                           // elec. angular rotor position
+        ACM.Tem = ACM.npp*(x[1]*ACM.KE + (ACM.Ld - ACM.Lq)*x[0]*x[1]);  //Te=npp*(Ke*iq+(Ld-Lq)id*iq)
+        fx[2] = (ACM.Tem - ACM.Tload)*ACM.mu_m; // elec. angular rotor speed    we'=(Te-Tl)*mu_m
+        fx[3] = x[2];                           // elec. angular rotor position     theta_e'=we
     #endif
 }
 void rK555_Lin(double t, double *x, double hs){
@@ -183,8 +183,8 @@ void measurement(){
     #elif MACHINE_TYPE == SYNCHRONOUS_MACHINE
         IS_C(0) = ACM.ial;
         IS_C(1) = ACM.ibe;
-        sm.omg = ACM.x[2];
-        sm.theta_d = ACM.x[3];
+        sm.omg = ACM.x[2];      //we
+        sm.theta_d = ACM.x[3];      //theta_e
         sm.theta_r = sm.theta_d;
     #endif
 }
